@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ACBEC 理事单位代表信息登记</title>
+  <style>
+    :root {
+      --ink: #182230;
+      --muted: #607083;
+      --line: #d8dee8;
+      --field: #ffffff;
+      --page: #f5f7fb;
+      --brand: #071f64;
+      --brand-mid: #1d86ce;
+      --brand-dark: #061848;
+      --accent: #c98721;
+      --china-red: #d41410;
+      --success: #1f7a53;
+      --danger: #b42318;
+      --shadow: 0 16px 44px rgba(25, 39, 62, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(135deg, rgba(29, 134, 206, 0.12), rgba(201, 135, 33, 0.08) 52%, rgba(212, 20, 16, 0.05)),
+        var(--page);
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    .shell {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      width: 88px;
+      height: 88px;
+      display: block;
+      flex: 0 0 auto;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 18px rgba(7, 31, 100, 0.14));
+    }
+
+    .brand-text {
+      min-width: 0;
+    }
+
+    .brand-text strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1.25;
+    }
+
+    .brand-text span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    .badge {
+      border: 1px solid rgba(7, 31, 100, 0.24);
+      color: var(--brand);
+      background: rgba(255, 255, 255, 0.72);
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .aside {
+      position: sticky;
+      top: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .notice,
+    .summary {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.78);
+      padding: 16px;
+      box-shadow: 0 8px 24px rgba(24, 34, 48, 0.06);
+    }
+
+    .notice h2,
+    .summary h2 {
+      margin: 0 0 8px;
+      font-size: 15px;
+    }
+
+    .notice p,
+    .summary p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .summary dl {
+      margin: 10px 0 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .summary div {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .summary dt {
+      color: var(--muted);
+    }
+
+    .summary dd {
+      margin: 0;
+      color: var(--ink);
+      font-weight: 600;
+      text-align: right;
+    }
+
+    main {
+      min-width: 0;
+    }
+
+    .form-panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(90deg, rgba(7, 31, 100, 0.13), transparent 56%),
+        linear-gradient(180deg, rgba(29, 134, 206, 0.06), transparent),
+        #fff;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .panel-head p {
+      max-width: 760px;
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    form {
+      padding: 24px;
+    }
+
+    fieldset {
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    fieldset + fieldset {
+      margin-top: 28px;
+      padding-top: 26px;
+      border-top: 1px solid var(--line);
+    }
+
+    legend {
+      width: 100%;
+      margin-bottom: 16px;
+      padding: 0;
+      color: var(--brand);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .field {
+      min-width: 0;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+      color: #263548;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .en {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      text-align: right;
+    }
+
+    .required {
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid #c9d2df;
+      border-radius: 6px;
+      background: var(--field);
+      color: var(--ink);
+      font: inherit;
+      font-size: 15px;
+      padding: 10px 12px;
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    textarea {
+      min-height: 98px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--brand-mid);
+      box-shadow: 0 0 0 3px rgba(29, 134, 206, 0.16);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #92a0b1;
+    }
+
+    .inline-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .checkbox input {
+      width: 18px;
+      height: 18px;
+      min-height: 18px;
+      margin: 2px 0 0;
+      flex: 0 0 auto;
+      accent-color: var(--brand);
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+    }
+
+    .status {
+      min-height: 22px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .status.ok {
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .status.error {
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    button {
+      min-width: 150px;
+      min-height: 46px;
+      border: 0;
+      border-radius: 6px;
+      background: var(--brand);
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 12px 18px;
+      transition: transform 120ms ease, background 160ms ease, box-shadow 160ms ease;
+      box-shadow: 0 10px 22px rgba(7, 31, 100, 0.22);
+    }
+
+    button:hover {
+      background: var(--brand-dark);
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      cursor: progress;
+      opacity: 0.72;
+      transform: none;
+    }
+
+    .fineprint {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 860px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .aside {
+        position: static;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 680px) {
+      .shell {
+        width: min(100% - 22px, 1120px);
+        padding-top: 18px;
+      }
+
+      .topbar,
+      .actions {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .badge {
+        width: fit-content;
+      }
+
+      .aside,
+      .grid,
+      .inline-fields {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-head,
+      form {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <img class="brand-logo" src="assets/ACBEC-logo-transparent.png" alt="ACBEC logo" />
+        <div class="brand-text">
+          <strong>ACBEC</strong>
+          <span>理事单位代表信息登记</span>
+        </div>
+      </div>
+      <div class="badge">提交至 info@acbec.com.au</div>
+    </header>
+
+    <div class="layout">
+      <aside class="aside" aria-label="表单说明">
+        <section class="notice">
+          <h2>资料用途</h2>
+          <p>本表仅用于 ACBEC 理事单位代表信息整理、身份核对及联络更新。</p>
+        </section>
+        <section class="summary">
+          <h2>填写状态</h2>
+          <p>带 <span class="required">*</span> 的项目为必填；护照号和身份证号为敏感信息，按需填写。</p>
+          <dl>
+            <div>
+              <dt>收件邮箱</dt>
+              <dd>ACBEC</dd>
+            </div>
+            <div>
+              <dt>表单语言</dt>
+              <dd>中文 / English</dd>
+            </div>
+          </dl>
+        </section>
+      </aside>
+
+      <main>
+        <section class="form-panel">
+          <div class="panel-head">
+            <h1>理事单位代表信息登记表</h1>
+            <p>请按真实情况填写。提交后，表单内容会通过邮件发送给 ACBEC 官方邮箱。</p>
+          </div>
+
+          <form id="representativeForm" action="https://formsubmit.co/ajax/info@acbec.com.au" method="POST" novalidate>
+            <input type="hidden" name="_subject" value="ACBEC 理事单位代表信息提交" />
+            <input type="hidden" name="_template" value="table" />
+            <input type="text" name="_honey" class="visually-hidden" tabindex="-1" autocomplete="off" />
+
+            <fieldset>
+              <legend>个人信息 Personal Details</legend>
+              <div class="grid">
+                <div class="field">
+                  <label for="chineseName">中文名字 <span class="en">Chinese Name <span class="required">*</span></span></label>
+                  <input id="chineseName" name="中文名字 / Chinese Name" type="text" autocomplete="name" required />
+                </div>
+                <div class="field">
+                  <label for="englishName">英文名字 <span class="en">English Name <span class="required">*</span></span></label>
+                  <input id="englishName" name="英文名字 / English Name" type="text" autocomplete="name" required />
+                </div>
+                <div class="field">
+                  <label for="birthPlace">出生地 <span class="en">Place of Birth <span class="required">*</span></span></label>
+                  <input id="birthPlace" name="出生地 / Place of Birth" type="text" required />
+                </div>
+                <div class="field">
+                  <label for="birthDate">生日 <span class="en">Date of Birth <span class="required">*</span></span></label>
+                  <input id="birthDate" name="生日 / Date of Birth" type="date" required />
+                </div>
+                <div class="field">
+                  <label for="ancestralHome">祖籍地 <span class="en">Ancestral Home <span class="required">*</span></span></label>
+                  <input id="ancestralHome" name="祖籍地 / Ancestral Home" type="text" required />
+                </div>
+                <div class="field">
+                  <label for="residence">生活/居住地 <span class="en">Residence <span class="required">*</span></span></label>
+                  <input id="residence" name="生活/居住地 / Residence" type="text" placeholder="例如：Sydney, Australia" required />
+                </div>
+                <div class="field">
+                  <label for="nationality">国籍 <span class="en">Nationality <span class="required">*</span></span></label>
+                  <input id="nationality" name="国籍 / Nationality" type="text" required />
+                </div>
+                <div class="field">
+                  <label for="currentStatus">目前身份 <span class="en">Current Status <span class="required">*</span></span></label>
+                  <input id="currentStatus" name="目前身份 / Current Status" type="text" placeholder="例如：PR / Citizen / Visa holder" required />
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>证件与联系方式 ID & Contact</legend>
+              <div class="grid">
+                <div class="field">
+                  <label for="passportNo">护照号 <span class="en">Passport No.</span></label>
+                  <input id="passportNo" name="护照号 / Passport No." type="text" autocomplete="off" />
+                </div>
+                <div class="field">
+                  <label for="chinaIdNo">大陆身份证 <span class="en">Mainland China ID</span></label>
+                  <input id="chinaIdNo" name="大陆身份证 / Mainland China ID" type="text" autocomplete="off" />
+                </div>
+                <div class="field">
+                  <label for="overseasMobile">外国手机号 <span class="en">Overseas Mobile</span></label>
+                  <input id="overseasMobile" name="外国手机号 / Overseas Mobile" type="tel" inputmode="tel" autocomplete="tel" placeholder="+61 ..." />
+                </div>
+                <div class="field">
+                  <label for="chinaMobile">中国手机号 <span class="en">China Mobile</span></label>
+                  <input id="chinaMobile" name="中国手机号 / China Mobile" type="tel" inputmode="tel" autocomplete="tel" placeholder="+86 ..." />
+                </div>
+                <div class="field">
+                  <label for="email">Email <span class="en">Email <span class="required">*</span></span></label>
+                  <input id="email" name="email" type="email" autocomplete="email" required />
+                </div>
+                <div class="field">
+                  <label for="wechat">微信号 <span class="en">WeChat ID</span></label>
+                  <input id="wechat" name="微信号 / WeChat ID" type="text" autocomplete="off" />
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>职务与荣誉 Roles & Titles</legend>
+              <div class="grid">
+                <div class="field">
+                  <label for="companyRole">企业职务 <span class="en">Corporate Role</span></label>
+                  <input id="companyRole" name="企业职务 / Corporate Role" type="text" />
+                </div>
+                <div class="field">
+                  <label for="socialRole">社会职务 <span class="en">Social Role</span></label>
+                  <input id="socialRole" name="社会职务 / Social Role" type="text" />
+                </div>
+                <div class="field full">
+                  <label for="honoraryTitles">荣誉头衔 <span class="en">Honorary Titles</span></label>
+                  <textarea id="honoraryTitles" name="荣誉头衔 / Honorary Titles"></textarea>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>确认 Confirmation</legend>
+              <label class="checkbox" for="privacyConsent">
+                <input id="privacyConsent" name="隐私确认 / Privacy Consent" type="checkbox" value="已确认" required />
+                <span>我确认以上资料真实准确，并同意 ACBEC 将这些资料用于理事单位代表信息整理、身份核对及必要联络。<span class="required">*</span></span>
+              </label>
+              <p class="fineprint">敏感证件号码会通过邮件传输；如需更高安全性，建议后续改为带数据库和加密存储的专用后台。</p>
+            </fieldset>
+
+            <div class="actions">
+              <div id="formStatus" class="status" aria-live="polite"></div>
+              <button id="submitButton" type="submit">提交信息</button>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("representativeForm");
+    const statusEl = document.getElementById("formStatus");
+    const submitButton = document.getElementById("submitButton");
+
+    function setStatus(message, type) {
+      statusEl.textContent = message;
+      statusEl.className = `status ${type || ""}`.trim();
+    }
+
+    function hasAnyPhone() {
+      return Boolean(
+        document.getElementById("overseasMobile").value.trim() ||
+        document.getElementById("chinaMobile").value.trim() ||
+        document.getElementById("wechat").value.trim()
+      );
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      setStatus("", "");
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        setStatus("请补全必填项目后再提交。", "error");
+        return;
+      }
+
+      if (!hasAnyPhone()) {
+        setStatus("请至少填写一个手机号或微信号，方便后续联系。", "error");
+        document.getElementById("overseasMobile").focus();
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.textContent = "提交中";
+      setStatus("正在提交，请稍候。", "");
+
+      try {
+        const formData = new FormData(form);
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: formData,
+          headers: { "Accept": "application/json" }
+        });
+
+        if (!response.ok) {
+          throw new Error("submit failed");
+        }
+
+        form.reset();
+        setStatus("提交成功，谢谢。ACBEC 官方邮箱将收到这份资料。", "ok");
+      } catch (error) {
+        setStatus("暂时无法在线提交，请稍后重试或联系 ACBEC。", "error");
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = "提交信息";
+      }
+    });
+  </script>
+</body>
+</html>
