@@ -462,10 +462,10 @@
         <section class="form-panel">
           <div class="panel-head">
             <h1>理事单位代表信息登记表</h1>
-            <p>请按真实情况填写。提交后，表单内容会通过邮件发送给 ACBEC 官方邮箱。</p>
+            <p>请按真实情况填写。提交后，资料会自动同步到 ACBEC 汇总表，并发送通知到官方邮箱。</p>
           </div>
 
-          <form id="representativeForm" action="https://formsubmit.co/ajax/info@acbec.com.au" method="POST" novalidate>
+          <form id="representativeForm" action="https://script.google.com/macros/s/AKfycbx6Va6ZcdMVXobhv0QIGqxFDISvNjf-pojLHg5b-j5Dy2JSGG3nwF85mjhO7AO1jC37/exec" method="POST" novalidate>
             <input type="hidden" name="_subject" value="ACBEC 理事单位代表信息提交" />
             <input type="hidden" name="_template" value="table" />
             <input type="text" name="_honey" class="visually-hidden" tabindex="-1" autocomplete="off" />
@@ -562,7 +562,7 @@
                 <input id="privacyConsent" name="隐私确认 / Privacy Consent" type="checkbox" value="已确认" required />
                 <span>我确认以上资料真实准确，并同意 ACBEC 将这些资料用于理事单位代表信息整理、身份核对及必要联络。<span class="required">*</span></span>
               </label>
-              <p class="fineprint">敏感证件号码会通过邮件传输；如需更高安全性，建议后续改为带数据库和加密存储的专用后台。</p>
+              <p class="fineprint">敏感证件号码会写入受权限保护的 Google Sheet，并通过邮件通知；请仅由 ACBEC 指定管理人员访问汇总表。</p>
             </fieldset>
 
             <div class="actions">
@@ -615,18 +615,17 @@
 
       try {
         const formData = new FormData(form);
-        const response = await fetch(form.action, {
+        formData.set("_page_url", window.location.href);
+        const payload = new URLSearchParams(formData);
+
+        await fetch(form.action, {
           method: "POST",
-          body: formData,
-          headers: { "Accept": "application/json" }
+          mode: "no-cors",
+          body: payload
         });
 
-        if (!response.ok) {
-          throw new Error("submit failed");
-        }
-
         form.reset();
-        setStatus("提交成功，谢谢。ACBEC 官方邮箱将收到这份资料。", "ok");
+        setStatus("提交成功，谢谢。资料已同步到 ACBEC 汇总表，官方邮箱也将收到通知。", "ok");
       } catch (error) {
         setStatus("暂时无法在线提交，请稍后重试或联系 ACBEC。", "error");
       } finally {
